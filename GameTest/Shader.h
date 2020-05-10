@@ -84,5 +84,4 @@ public:
 	void setBool(const std::string& name, bool value) {
 		glUniform1i(GetLocation(name), value);
 	}
-
 };

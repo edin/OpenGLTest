@@ -1,3 +1,8 @@
+// Installed using vcpkg:
+// vcpkg install glew
+// vcpkg install glm
+// vcpkg install glfw3
+
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -7,22 +12,29 @@
 #include "Shader.h"
 #pragma comment(lib, "opengl32")
 
-void SetupViewport(GLFWwindow* window) {
-    int width;
-    int height;
+bool isLeft = false;
+bool isRight = false;
 
-    glfwGetWindowSize(window, &width, &height);
-    glViewport(0, 0, width, height);
-    
-    float aspect = (float)width / height;
-
-    glLoadIdentity();
-    glOrtho(-10.0 * aspect, 10.0 * aspect, -10.0, 10.0, 1.0, -1.0);
-}
 
 void OnFrameBufferSizeCallback(GLFWwindow* window, int width, int height)
 {
-    SetupViewport(window);
+    //SetupViewport(window);
+}
+
+void OnKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (action == GLFW_PRESS) {
+        isLeft  = (key == GLFW_KEY_LEFT);
+        isRight = (key == GLFW_KEY_RIGHT);
+    }
+    else if (action == GLFW_RELEASE) {
+        if (key == GLFW_KEY_LEFT) {
+            isLeft = false;
+        }
+        if (key == GLFW_KEY_RIGHT) {
+            isRight = false;
+        }
+    }
 }
 
 GLFWwindow* CreateWindow() {
@@ -36,6 +48,7 @@ GLFWwindow* CreateWindow() {
     }
     glfwSetFramebufferSizeCallback(window, OnFrameBufferSizeCallback);
     glfwMakeContextCurrent(window);
+    glfwSetKeyCallback(window, OnKeyCallback);
 
     GLenum err = glewInit();
     if (GLEW_OK != err) {
@@ -79,9 +92,9 @@ int main(void)
     // Or, for an ortho camera :
     //glm::mat4 Projection = glm::ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f); // In world coordinates
 
-    // Camera matrix
+    glm::vec3 cameraPosition(4, 3, 3);
     glm::mat4 View = glm::lookAt(
-        glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
+        cameraPosition,
         glm::vec3(0, 0, 0), // and looks at the origin
         glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
     );
@@ -95,7 +108,29 @@ int main(void)
 
     while (!glfwWindowShouldClose(window))
     {
+        bool updateMVP = false;
         glClear(GL_COLOR_BUFFER_BIT);
+
+        if (isLeft) {
+            cameraPosition.x -= 0.1;
+            updateMVP = true;
+        }
+
+        if (isRight) {
+            cameraPosition.x += 0.1;
+            updateMVP = true;
+        }
+
+        if (updateMVP) {
+            glm::mat4 View = glm::lookAt(
+                cameraPosition,
+                glm::vec3(0, 0, 0), 
+                glm::vec3(0, 1, 0)  
+            );
+            glm::mat4 Model = glm::mat4(1.0f);
+            glm::mat4 mvp = Projection * View * Model;
+            shader.setMatrix("MVP", mvp);
+        }
 
         glBegin(GL_TRIANGLES);
         glVertex3f(0.0, 0.0, 0.0);
