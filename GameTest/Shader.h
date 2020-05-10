@@ -6,20 +6,39 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
-class Shader {
+class ShaderProgram {
 private:
-	GLuint id;
-private:
+	GLint id;
+
 	void ValidateShader(GLuint shaderId) {
 		char message[512];
 		GLint status;
 		glGetShaderiv(shaderId, GL_COMPILE_STATUS, &status);
 		if (!status) {
 			glGetShaderInfoLog(shaderId, 512, nullptr, message);
-			std::cerr << "Shader::ValidateShader: " << message << "\n";
+			std::cerr << "ShaderProgram::ValidateShader: " << message << "\n";
 		}
 	}
+public:
+	ShaderProgram(GLenum shaderType, const std::string& source) {
+		id = glCreateShader(shaderType);
+		const GLchar* src = source.c_str();
+		glShaderSource(id, 1, &src, nullptr);
+		glCompileShader(id);
+		ValidateShader(id);
+	}
 
+	~ShaderProgram() {
+		glDeleteShader(id);
+	}
+
+	GLint GetShaderID() { return id; }
+};
+
+class Shader {
+private:
+	GLuint id;
+private:
 	void ValidateProgram(GLuint programId) {
 		char message[512];
 		GLint status;
@@ -30,33 +49,29 @@ private:
 		}
 	}
 
-	GLuint GetShader(GLenum shaderType, const std::string& source) {
-		auto shader = glCreateShader(shaderType);
-		const GLchar* src = source.c_str();
-		glShaderSource(shader, 1, &src, nullptr);
-		glCompileShader(shader);
-		ValidateShader(shader);
-		return shader;
-	}
-
 	GLint GetLocation(const std::string& name) {
 		return glGetUniformLocation(id, name.c_str());
 	}
 
 public:
-	Shader(std::string vertexShader, std::string fragmentShader) {
-		GLuint vertexShaderID = GetShader(GL_VERTEX_SHADER, vertexShader);
-		GLuint fragmentShaderID = GetShader(GL_FRAGMENT_SHADER, fragmentShader);
-		
+	Shader(const std::string& vertexShaderSource, const std::string& fragmentShaderSource) {
+
+		ShaderProgram vertexShader(GL_VERTEX_SHADER, vertexShaderSource);
+		ShaderProgram fragmentShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
+
 		id = glCreateProgram();
-		glAttachShader(id, vertexShaderID);
-		glAttachShader(id, fragmentShaderID);
+		glAttachShader(id, vertexShader.GetShaderID());
+		glAttachShader(id, fragmentShader.GetShaderID());
 		glLinkProgram(id);
 		ValidateProgram(id);
+
+		glDetachShader(id, vertexShader.GetShaderID());
+		glDetachShader(id, fragmentShader.GetShaderID());
 	}
 
 	~Shader() {
-		glDeleteShader(id);
+		glUseProgram(0);
+		glDeleteProgram(id);
 	}
 
 	void Use()
