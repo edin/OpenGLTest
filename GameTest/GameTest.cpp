@@ -24,7 +24,7 @@ const auto fragmentShader = R"(
 )";
 
 InputController inputController;
-Camera camera;
+
 
 void OnFrameBufferSizeCallback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -34,7 +34,7 @@ void OnKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mo
     inputController.UpdateKeyStatus(key, scancode, action, mods);
 }
 
-class Screen : public GameScreen {
+class Screen1 : public GameScreen {
 public:
     void Render() override {
         glBegin(GL_LINES);
@@ -72,31 +72,28 @@ int main(void)
     Shader shader(vertexShader, fragmentShader);
     shader.Bind();
 
-    window.AddScreen(std::make_unique<Screen>());
+    window.AddScreen(std::make_unique<Screen1>());
     window.AddScreen(std::make_unique<Screen2>());
 
     glfwSetFramebufferSizeCallback(window, OnFrameBufferSizeCallback);
     glfwSetKeyCallback(window, OnKeyCallback);
 
-    Size windowSize = window.GetSize();
-    camera.SetPerspectiveProjection(45.0f, windowSize.aspectRatio(), 0.1f, 100.0f);
+    Camera camera;
+    camera.SetPerspectiveProjection(45.0f, window.GetSize().aspectRatio(), 0.1f, 100.0f);
 
     glClearColor(0.2, 0.2, 0.8, 1.0);
 
     while (!window.ShouldClose())
     {
         glClear(GL_COLOR_BUFFER_BIT);
+
         glm::vec3 direction = inputController.GetDirection(0.01);
         camera.Move(direction);
-
         shader.SetMatrix("MVP", camera.GetMVP());
-        auto& screens = window.GetScreens();
-        for (auto& screen : screens) {
-            screen->Update();
-            screen->Render();
-        }
 
+        window.UpdateScreens();
         window.SwapBuffers();
+
         glfwPollEvents();
     }
     glfwTerminate();

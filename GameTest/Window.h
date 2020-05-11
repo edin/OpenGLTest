@@ -57,6 +57,13 @@ public:
         return size;
     }
 
+    void UpdateScreens() {
+        for (auto& screen : screens) {
+            screen->Update();
+            screen->Render();
+        }
+    }
+
     void SwapBuffers() {
         glfwSwapBuffers(window);
     }
