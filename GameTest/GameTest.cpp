@@ -15,7 +15,6 @@
 bool isLeft = false;
 bool isRight = false;
 
-
 void OnFrameBufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     //SetupViewport(window);
