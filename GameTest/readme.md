@@ -1,0 +1,9 @@
+# Learning OpenGL
+
+# Dependencies  
+Installed using vcpkg:
+```
+ - vcpkg install glew
+ - vcpkg install glm
+ - vcpkg install glfw3
+```
