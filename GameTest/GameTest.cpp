@@ -23,20 +23,31 @@ const auto fragmentShader = R"(
     }
 )";
 
-InputController inputController;
-
-
-void OnFrameBufferSizeCallback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
-
-void OnKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    inputController.UpdateKeyStatus(key, scancode, action, mods);
-}
-
 class Screen1 : public GameScreen {
+private:
+    Camera camera;
+    Shader shader{ vertexShader, fragmentShader };
 public:
+
+    void Initialize() {
+        auto size = window->GetSize();
+        auto ratio = size.aspectRatio();
+        camera.SetPerspectiveProjection(45.0f, ratio, 0.1f, 100.0f);
+    }
+
+    void Update() override {
+        glm::vec3 direction = window->input.GetDirection(0.01);
+        camera.Move(direction);
+        shader.SetMatrix("MVP", camera.GetMVP());
+    }
+
     void Render() override {
+
+        shader.Bind();
+
+        glClearColor(0.2, 0.2, 0.8, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+
         glBegin(GL_LINES);
         for (int i = -10; i <= 10; i++) {
             glVertex3f(i * 0.1, 0.0, -1.0);
@@ -66,35 +77,13 @@ public:
     }
 };
 
+
 int main(void)
 {
     Window window(1600, 900, "Open GL Test");
-    Shader shader(vertexShader, fragmentShader);
-    shader.Bind();
 
     window.AddScreen(std::make_unique<Screen1>());
     window.AddScreen(std::make_unique<Screen2>());
 
-    glfwSetFramebufferSizeCallback(window, OnFrameBufferSizeCallback);
-    glfwSetKeyCallback(window, OnKeyCallback);
-
-    Camera camera;
-    camera.SetPerspectiveProjection(45.0f, window.GetSize().aspectRatio(), 0.1f, 100.0f);
-
-    glClearColor(0.2, 0.2, 0.8, 1.0);
-
-    while (!window.ShouldClose())
-    {
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glm::vec3 direction = inputController.GetDirection(0.01);
-        camera.Move(direction);
-        shader.SetMatrix("MVP", camera.GetMVP());
-
-        window.UpdateScreens();
-        window.SwapBuffers();
-
-        glfwPollEvents();
-    }
-    glfwTerminate();
+    window.EnterLoop();
 }
