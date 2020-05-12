@@ -62,8 +62,24 @@ public:
 };
 
 class Screen2 : public GameScreen {
+private:
+    Camera camera;
+    Shader shader{ vertexShader, fragmentShader };
 public:
+    void Initialize() {
+        auto size = window->GetSize();
+        auto ratio = size.aspectRatio();
+        camera.SetPerspectiveProjection(45.0f, ratio, 0.1f, 100.0f);
+    }
+
+    void Update() override {
+        glm::vec3 direction = window->input.GetDirection(0.01);
+        camera.Move(direction);
+        shader.SetMatrix("MVP", camera.GetMVP());
+    }
+
     void Render() override {
+        shader.Bind();
         glBegin(GL_LINES);
         for (int i = -10; i <= 10; i++) {
             glVertex3f(i * 0.1, 1.0, -1.0);
