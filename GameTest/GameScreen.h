@@ -16,6 +16,14 @@ public:
     void SetPlacement(Rectangle placement) { this->placement = placement; }
     void SetTimeStep(float time) { this->timeStep = time; }
 
+
+    Size GetScreenSize() {
+        Size size;
+        glfwGetWindowSize(window, &size.width, &size.height);
+        return size;
+    }
+
+
     virtual void Initialize() {};
     virtual void Update() {};
     virtual void Render() {};
