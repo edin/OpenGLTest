@@ -12,3 +12,4 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 template <typename T> using UniqueVector = std::vector<std::unique_ptr<T>>;
+using uint = unsigned int;

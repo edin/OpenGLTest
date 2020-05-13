@@ -96,10 +96,13 @@ public:
 
 int main(void)
 {
-    Window window(1600, 900, "Open GL Test");
-
+    Window window(1600, 900, "Open GL Test 1");
     window.AddScreen(std::make_unique<Screen1>());
     window.AddScreen(std::make_unique<Screen2>());
 
-    window.EnterLoop();
+    Window window2(1600, 900, "Open GL Test 2");
+    window2.AddScreen(std::make_unique<Screen1>());
+    window2.AddScreen(std::make_unique<Screen2>());
+
+    Application::GetInstance().Loop();
 }

@@ -4,15 +4,8 @@
 #include "Logger.h"
 #include "GameScreen.h"
 #include "InputController.h"
+#include "BasicTypes.h"
 
-struct Size {
-    int width;
-    int height;
-
-    float aspectRatio() {
-        return (float)width / float(height);
-    }
-};
 
 class Window;
 void OnKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -35,15 +28,21 @@ public:
     }
 
     void RemoveWindow(Window* window) {
+        auto it = std::find(windows.begin(), windows.end(), window);
+        if (it != windows.end()) {
+            windows.erase(it);
+        }
     }
 
     const std::vector<Window*>& GetWindows() const {
         return windows;
     }
 
+    void Loop();
     Window* FindWindow(GLFWwindow* window);
 
     Application(Application const&) = delete;
+    
     void operator=(Application const&) = delete;
 };
 
@@ -84,10 +83,15 @@ public:
 
     virtual ~Window() {
         Application::GetInstance().RemoveWindow(this);
+        DestroyWindow();
     }
 
     operator GLFWwindow* () const {
         return window;
+    }
+
+    void DestroyWindow() {
+        glfwDestroyWindow(window);
     }
 
     GLFWwindow* GetWindow() {
@@ -158,4 +162,24 @@ Window* Application::FindWindow(GLFWwindow* window) {
         }
     }
     return nullptr;
+}
+
+void Application::Loop() {
+    while (windows.size() > 0) 
+    {
+        for (auto window : windows) 
+        {
+            if (!window->ShouldClose()) {
+                glfwMakeContextCurrent(window->GetWindow());
+                window->UpdateScreens();
+                window->SwapBuffers();
+            }
+            else {
+                RemoveWindow(window);
+                window->DestroyWindow();
+            }
+        } 
+        glfwPollEvents();
+    }
+    glfwTerminate();
 }

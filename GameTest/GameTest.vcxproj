@@ -150,10 +150,12 @@
     <ClCompile Include="GameTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BasicTypes.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GameScreen.h" />
     <ClInclude Include="InputController.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="TypeAliases.h" />
     <ClInclude Include="Window.h" />
