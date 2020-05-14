@@ -147,18 +147,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GameTest.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BasicTypes.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="GameScreen.h" />
-    <ClInclude Include="InputController.h" />
-    <ClInclude Include="Logger.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="TypeAliases.h" />
-    <ClInclude Include="Window.h" />
+    <ClInclude Include="Nuts\BasicTypes.h" />
+    <ClInclude Include="Nuts\Camera.h" />
+    <ClInclude Include="Nuts\GameScreen.h" />
+    <ClInclude Include="Nuts\InputController.h" />
+    <ClInclude Include="Nuts\Logger.h" />
+    <ClInclude Include="Nuts\Mesh.h" />
+    <ClInclude Include="Nuts\Nuts.h" />
+    <ClInclude Include="Nuts\Shader.h" />
+    <ClInclude Include="Nuts\TypeAliases.h" />
+    <ClInclude Include="Nuts\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

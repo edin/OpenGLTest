@@ -1,10 +1,7 @@
 #pragma comment(lib, "opengl32")
+#include "Nuts/Nuts.h"
 
-#include "TypeAliases.h"
-#include "Window.h"
-#include "Shader.h"
-#include "Camera.h"
-#include "InputController.h"
+using namespace Nuts;
 
 const auto vertexShader = R"(
     #version 330 core
@@ -28,10 +25,9 @@ private:
     Camera camera;
     Shader shader{ vertexShader, fragmentShader };
 public:
-
     void Initialize() {
-        auto size = window->GetSize();
-        auto ratio = size.aspectRatio();
+        auto size = GetScreenSize();
+        auto ratio = size.AspectRatio();
         camera.SetPerspectiveProjection(45.0f, ratio, 0.1f, 100.0f);
     }
 
@@ -42,11 +38,10 @@ public:
     }
 
     void Render() override {
-
         shader.Bind();
 
-        glClearColor(0.2, 0.2, 0.8, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
+        Scissor();
+        ClearColor();
 
         glBegin(GL_LINES);
         for (int i = -10; i <= 10; i++) {
@@ -67,8 +62,8 @@ private:
     Shader shader{ vertexShader, fragmentShader };
 public:
     void Initialize() {
-        auto size = window->GetSize();
-        auto ratio = size.aspectRatio();
+        auto size = GetScreenSize();
+        auto ratio = size.AspectRatio();
         camera.SetPerspectiveProjection(45.0f, ratio, 0.1f, 100.0f);
     }
 
@@ -80,6 +75,10 @@ public:
 
     void Render() override {
         shader.Bind();
+
+        Scissor();
+        ClearColor();
+
         glBegin(GL_LINES);
         for (int i = -10; i <= 10; i++) {
             glVertex3f(i * 0.1, 1.0, -1.0);
@@ -93,16 +92,23 @@ public:
     }
 };
 
-
 int main(void)
 {
     Window window(1600, 900, "Open GL Test 1");
+
     window.AddScreen(std::make_unique<Screen1>());
     window.AddScreen(std::make_unique<Screen2>());
 
-    Window window2(1600, 900, "Open GL Test 2");
-    window2.AddScreen(std::make_unique<Screen1>());
-    window2.AddScreen(std::make_unique<Screen2>());
+    auto& screens = window.GetScreens();
+    screens[0]->SetColor(Color{ 0.2, 0.2, 1.0 });
+    screens[1]->SetColor(Color{ 0.2, 0.2, 0.8 });
+
+    screens[0]->SetPlacement(Rectangle(0.0, 0.0, 0.5, 1.0));
+    screens[1]->SetPlacement(Rectangle(0.0, 0.5, 1.0, 1.0));
+
+    //Window window2(1600, 900, "Open GL Test 2");
+    //window2.AddScreen(std::make_unique<Screen1>());
+    //window2.AddScreen(std::make_unique<Screen2>());
 
     Application::GetInstance().Loop();
 }
