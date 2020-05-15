@@ -8,12 +8,22 @@ namespace Nuts {
         float r;
         float g;
         float b;
+        Color() {}
+        Color(float r, float g, float b) : r(r), g(g), b(b) {}
     };
 
     struct Vertex {
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec2 textureCoords;
+        Color color;
+
+        Vertex(glm::vec3 position, Color color) {
+            this->position = position;
+            this->color = color;
+            this->textureCoords = glm::vec2();
+            this->normal = glm::vec3();
+        }
     };
 
     struct Texture {
