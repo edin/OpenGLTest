@@ -3,6 +3,7 @@
 #include "TypeAliases.h"
 
 namespace Nuts {
+
     struct Color {
         float r;
         float g;

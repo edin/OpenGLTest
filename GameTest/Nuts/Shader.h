@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TypeAliases.h"
 #include "Logger.h"
 
 namespace Nuts {
