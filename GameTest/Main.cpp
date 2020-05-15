@@ -110,14 +110,15 @@ int main(void)
     Window window(1600, 900, "Open GL Test 1");
 
     window.AddScreen(std::make_unique<Screen1>());
-    //window.AddScreen(std::make_unique<Screen2>());
+    window.AddScreen(std::make_unique<Screen2>());
 
     auto& screens = window.GetScreens();
     screens[0]->SetColor(Color{ 0.2, 0.2, 1.0 });
-    //screens[1]->SetColor(Color{ 0.2, 0.2, 0.8 });
+    screens[1]->SetColor(Color{ 0.2, 0.2, 0.8 });
 
-    screens[0]->SetPlacement(Rectangle(0.0, 0.0, 0.5, 1.0));
-    //screens[1]->SetPlacement(Rectangle(0.0, 0.5, 1.0, 1.0));
+    screens[0]->SetPlacement(Rectangle(0.0, 0.5, 1.0, 1.0));
+    screens[1]->SetPlacement(Rectangle(0.0, 0.0, 0.5, 1.0));
+    
 
     //Window window2(1600, 900, "Open GL Test 2");
     //window2.AddScreen(std::make_unique<Screen1>());
