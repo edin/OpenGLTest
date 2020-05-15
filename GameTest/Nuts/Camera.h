@@ -5,11 +5,11 @@
 namespace Nuts {
     class Camera {
     private:
-        glm::vec3 position{ 0, 0, 3 };
+        glm::vec3 position{ 0, 5, 5 };
         glm::vec3 lookAt{ 0, 0, 0 };
         glm::vec3 up{ 0,1,0 };
-        glm::vec3 direction{ 0, 0, -1 };
-        glm::vec3 rotationAxis{ 0,0,1 };
+        glm::vec3 direction{ 0, -1, -1 };
+        glm::vec3 rotationAxis{ 0,1,0 };
 
         glm::mat4 Projection;
         glm::mat4 Model;
@@ -94,8 +94,11 @@ namespace Nuts {
 
         glm::mat4 GetMVP() {
             auto View = GetLookAtMatrix();
-            //glm::quat rotation = glm::angleAxis(glm::radians(rotationDeg), rotationAxis);
+            glm::quat rotation = glm::angleAxis(glm::radians(rotationDeg), rotationAxis);
             
+            auto RotationMatrix = glm::toMat4(rotation);
+
+            View = View * RotationMatrix;
 
             return Projection * View * Model;
         }

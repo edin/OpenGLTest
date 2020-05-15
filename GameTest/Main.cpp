@@ -36,10 +36,10 @@ public:
         //camera.Move(direction);
 
         if (window->input.IsLeft()) {
-            camera.Rotate(1.0);
+            camera.Rotate(0.10);
         }
         if (window->input.IsRight()) {
-            camera.Rotate(-1.0);
+            camera.Rotate(-0.1);
         }
         if (window->input.IsUp()) {
             camera.Zoom(0.001);
