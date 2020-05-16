@@ -78,18 +78,20 @@ namespace Nuts {
         }
 
         glm::mat4 GetLookAtMatrix() {
-
-
-            glm::mat4 View = glm::lookAt(
-                position,
-                lookAt,
-                up
-            );
+            glm::mat4 View = glm::lookAt(position, lookAt, up);
             return View;
         }
 
         void Move(glm::vec3 direction) {
             position = position + direction;
+        }
+
+        void SetModel(const glm::mat4& model) {
+            this->Model = model;
+        }
+
+        void ResetModel() {
+            this->Model = glm::mat4(1.0f);
         }
 
         glm::mat4 GetMVP() {

@@ -30,26 +30,48 @@ class Screen1 : public GameScreen {
 private:
     Camera camera;
     Shader shader{ vertexShader, fragmentShader };
-    GLuint cubeBuffer;
-    GLuint elementbuffer;
-    std::vector<GLuint> cubeIndices;
+    std::vector<uint> cubeIndices;
+    std::unique_ptr<Mesh> cubeMesh;
+
 public:
     void Initialize() {
         auto size = GetScreenSize();
         auto ratio = size.AspectRatio();
         camera.SetPerspectiveProjection(45.0f, ratio, 0.1f, 100.0f);
 
-        static const Vertex cube[] = {
-            Vertex(glm::vec3(0.0f, 0.0f, 0.0f), Color(0.0f, 0.0f, 1.0f)),
-            Vertex(glm::vec3(0.3f, 0.0f, 0.0f), Color(1.0f, 0.0f, 0.0f)),
-            Vertex(glm::vec3(0.3f, 0.3f, 0.0f), Color(0.0f, 0.0f, 0.0f)),
-            Vertex(glm::vec3(0.0f, 0.3f, 0.0f), Color(0.0f, 0.0f, 0.0f)),
+        std::vector<Vertex> cube = {
+            Vertex(glm::vec3(0.0f, 0.0f, 0.0f), Color(0.0f, 0.0f, 0.0f)),
+            Vertex(glm::vec3(0.3f, 0.0f, 0.0f), Color(0.0f, 0.0f, 1.0f)),
+            Vertex(glm::vec3(0.3f, 0.3f, 0.0f), Color(0.0f, 1.0f, 0.0f)),
+            Vertex(glm::vec3(0.0f, 0.3f, 0.0f), Color(0.0f, 1.0f, 1.0f)),
 
-            Vertex(glm::vec3(0.0f, 0.0f, 0.3f), Color(0.0f, 0.0f, 1.0f)),
-            Vertex(glm::vec3(0.3f, 0.0f, 0.3f), Color(1.0f, 0.0f, 0.0f)),
-            Vertex(glm::vec3(0.3f, 0.3f, 0.3f), Color(0.0f, 0.0f, 0.0f)),
-            Vertex(glm::vec3(0.0f, 0.3f, 0.3f), Color(0.0f, 0.0f, 0.0f)),
+            Vertex(glm::vec3(0.0f, 0.0f, 0.3f), Color(1.0f, 0.0f, 0.0f)),
+            Vertex(glm::vec3(0.3f, 0.0f, 0.3f), Color(1.0f, 0.0f, 1.0f)),
+            Vertex(glm::vec3(0.3f, 0.3f, 0.3f), Color(1.0f, 1.0f, 0.0f)),
+            Vertex(glm::vec3(0.0f, 0.3f, 0.3f), Color(1.0f, 1.0f, 1.0f)),
         };
+
+        cubeIndices = {
+            0, 1, 2,
+            2, 0, 3,
+
+            0, 4, 1,
+            1, 4, 5,
+
+            0, 3, 7,
+            7, 0, 4,
+
+            1, 2, 6,
+            6, 1, 5,
+
+            6, 5, 4,
+            6, 4, 7,
+
+            6, 7, 2,
+            2, 7, 3
+        };
+
+        cubeMesh = std::make_unique<Mesh>(cube, cubeIndices);
 
         // --------------------------------------
         //        4---------------5 
@@ -60,34 +82,6 @@ public:
         //      | /             |/
         //      3---------------2 
         // --------------------------------------
-
-        cubeIndices = { 
-            0, 1, 2, 
-            2, 0, 3, 
-
-            0, 4, 1,
-            1, 4, 5,
-
-            0, 3, 7,
-            7, 0, 4,
-
-            6, 1, 2,
-            2, 6, 3,
-
-            6, 4, 1,
-            1, 4, 5,
-
-            6, 3, 7,
-            7, 6, 4,
-        };
-
-        glGenBuffers(1, &cubeBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
-
-        glGenBuffers(1, &elementbuffer);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, cubeIndices.size() * sizeof(unsigned int), &cubeIndices[0], GL_STATIC_DRAW);
     }
 
     void Update() override {
@@ -117,6 +111,9 @@ public:
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
 
+        camera.ResetModel();
+        shader.SetMVPMatrix(camera.GetMVP());
+
         glBegin(GL_LINES);
         for (int i = -10; i <= 10; i++) {
             glVertex3f(i * 0.1, 0.0, -1.0);
@@ -128,17 +125,19 @@ public:
         }
         glEnd();
 
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBuffer);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+        auto identity = glm::mat4(1.f);
 
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBuffer);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+        for (int z = -3; z <= 3; z+=2) {
+            for (int x = -3; x <= 3; x+=2) {
+                float xf = x * 0.3 - 0.15;
+                float zf = z * 0.3 - 0.15;
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-        glDrawElements(GL_TRIANGLES, cubeIndices.size(), GL_UNSIGNED_INT, (void*)0);
-        glDisableVertexAttribArray(0);
+                glm::mat4 translate = glm::translate(identity, glm::vec3(xf, 0.f, zf));
+                camera.SetModel(translate);
+                shader.SetMVPMatrix(camera.GetMVP());
+                cubeMesh->Draw();
+            }
+        }
     }
 };
 

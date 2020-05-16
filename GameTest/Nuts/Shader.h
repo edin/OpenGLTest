@@ -36,6 +36,7 @@ namespace Nuts {
     class Shader {
     private:
         GLuint id;
+        GLint MVPLocation;
     private:
         void ValidateProgram(GLuint programId) {
             char message[512];
@@ -64,6 +65,8 @@ namespace Nuts {
 
             glDetachShader(id, vertexShader.GetShaderID());
             glDetachShader(id, fragmentShader.GetShaderID());
+
+            MVPLocation = GetLocation("MVP");
         }
 
         ~Shader() {
@@ -73,6 +76,10 @@ namespace Nuts {
         void Bind()
         {
             glUseProgram(id);
+        }
+
+        void SetMVPMatrix(const glm::mat4& mat) {
+            glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, &mat[0][0]);
         }
 
         void SetMatrix(const std::string& name, const glm::mat4& mat) {

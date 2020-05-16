@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "InputController.h"
 #include "GameScreen.h"
+#include "Mesh.h"
 
 namespace Nuts {
     Size GameScreen::GetScreenSize() {
