@@ -3,20 +3,22 @@
 #include "TypeAliases.h"
 
 namespace Nuts {
-
     struct Color {
-        float r;
-        float g;
-        float b;
+        float r = 0.0;
+        float g = 0.0;
+        float b = 0.0;
         Color() {}
         Color(float r, float g, float b) : r(r), g(g), b(b) {}
     };
 
     struct Vertex {
-        glm::vec3 position;
-        glm::vec3 normal;
-        glm::vec2 textureCoords;
-        Color color;
+        glm::vec3 position{};
+        glm::vec3 normal{};
+        glm::vec2 textureCoords{};
+        Color color{};
+
+        Vertex() {
+        }
 
         Vertex(glm::vec3 position, Color color) {
             this->position = position;

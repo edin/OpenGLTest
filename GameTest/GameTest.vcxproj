@@ -156,6 +156,7 @@
     <ClInclude Include="Nuts\InputController.h" />
     <ClInclude Include="Nuts\Logger.h" />
     <ClInclude Include="Nuts\Mesh.h" />
+    <ClInclude Include="Nuts\Model.h" />
     <ClInclude Include="Nuts\Nuts.h" />
     <ClInclude Include="Nuts\Shader.h" />
     <ClInclude Include="Nuts\TypeAliases.h" />

@@ -45,6 +45,9 @@
     <ClInclude Include="Nuts\Nuts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Nuts\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">

@@ -10,7 +10,7 @@ const auto vertexShader = R"(
     layout(location = 2) in vec3 vNormal;
     layout(location = 3) in vec2 texCoordIn;
 
-    out vec3 fragmentColor; 
+    out vec3 fragmentColor;
     out vec2 texCoord;
 
     uniform mat4 MVP;
@@ -56,14 +56,14 @@ public:
         float y2 = 440.0 / 671.0;
 
         //  0----------1  ----u---- >
-        //  |          | 
-        //  |          | 
-        //  |          | 
-        //  2----------3----------8----------10----------12 
-        //  |          |          |          |           |  
-        //  |          |          |          |           |  
-        //  |          |          |          |           |  
-        //  4----------5----------9----------11----------13 
+        //  |          |
+        //  |          |
+        //  |          |
+        //  2----------3----------8----------10----------12
+        //  |          |          |          |           |
+        //  |          |          |          |           |
+        //  |          |          |          |           |
+        //  4----------5----------9----------11----------13
         //  |          |
         //  |          |
         //  |          |
@@ -83,26 +83,26 @@ public:
         float v2 = v + 2 * bs;
         float v3 = v + 3 * bs;
         float v4 = v + 4 * bs;
-                
+
         std::vector<Vertex> cube = {
             Vertex(glm::vec3(0.0f, 0.3f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u, v)),   //0
             Vertex(glm::vec3(0.0f, 0.3f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u1,v)),   //1
             Vertex(glm::vec3(0.0f, 0.0f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u, v1)),  //2
 
             Vertex(glm::vec3(0.0f, 0.0f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u1, v1)), //3
-            Vertex(glm::vec3(0.3f, 0.0f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u, v2)),  //4 
-            Vertex(glm::vec3(0.3f, 0.0f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u1, v2)), //5 
-            
+            Vertex(glm::vec3(0.3f, 0.0f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u, v2)),  //4
+            Vertex(glm::vec3(0.3f, 0.0f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u1, v2)), //5
+
             Vertex(glm::vec3(0.3f, 0.3f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u,  v3)), //6
-            Vertex(glm::vec3(0.3f, 0.3f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u1, v3)), //7 
-            Vertex(glm::vec3(0.0f, 0.3f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u2, v1)), //8 
-            
-            Vertex(glm::vec3(0.3f, 0.3f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u2, v2)), //9 
+            Vertex(glm::vec3(0.3f, 0.3f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u1, v3)), //7
+            Vertex(glm::vec3(0.0f, 0.3f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u2, v1)), //8
+
+            Vertex(glm::vec3(0.3f, 0.3f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u2, v2)), //9
             Vertex(glm::vec3(0.0f, 0.3f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u3, v1)), //10
             Vertex(glm::vec3(0.3f, 0.3f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u3, v2)), //11
-            
-            Vertex(glm::vec3(0.0f, 0.0f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u4, v1)), //12 
-            Vertex(glm::vec3(0.3f, 0.0f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u4, v2)), //13 
+
+            Vertex(glm::vec3(0.0f, 0.0f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u4, v1)), //12
+            Vertex(glm::vec3(0.3f, 0.0f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u4, v2)), //13
         };
 
         std::vector<Texture> textures = {};
@@ -139,7 +139,6 @@ public:
         glGenerateMipmap(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
         stbi_image_free(image);
-
     }
 
     void Update() override {
@@ -164,8 +163,6 @@ public:
         if (window->input.IsKeyDown(GLFW_KEY_S)) {
             camera.PositionY(-0.01);
         }
-
-        //shader.SetMatrix("MVP", camera.GetMVP());
     }
 
     void Render() override {
@@ -205,8 +202,8 @@ public:
         glBindTexture(GL_TEXTURE_2D, texture);
         shader.SetInt("texture1", 0);
 
-        for (int z = -10; z <= 10; z+=1) {
-            for (int x = -10; x <= 10; x+=1) {
+        for (int z = -10; z <= 10; z += 1) {
+            for (int x = -10; x <= 10; x += 1) {
                 float xf = x * 0.3 - 0.15;
                 float zf = z * 0.3 - 0.15;
                 //float yf = (sin(xf+time) + cos(zf + time)) * 0.4;
@@ -279,7 +276,7 @@ int main(void)
     Window window(1600, 900, "Open GL Test 1");
 
     window.AddScreen(std::make_unique<Screen1>());
-    
+
     auto& screens = window.GetScreens();
 
     screens[0]->SetColor(Color{ 1.0, 1.0, 1.0 });
@@ -292,7 +289,7 @@ int main(void)
 
     screens[0]->SetPlacement(Rectangle(0.0, 0.5, 1.0, 1.0));
     screens[1]->SetPlacement(Rectangle(0.0, 0.0, 0.5, 1.0));
-    */ 
+    */
 
     //Window window2(1600, 900, "Open GL Test 2");
     //window2.AddScreen(std::make_unique<Screen1>());
