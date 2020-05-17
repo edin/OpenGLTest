@@ -43,6 +43,7 @@ private:
     std::unique_ptr<Mesh> cubeMesh;
     unsigned char* image;
     GLuint texture;
+    float time = 0.0;
 public:
     void Initialize() {
         auto size = GetScreenSize();
@@ -84,12 +85,12 @@ public:
         float v4 = v + 4 * bs;
                 
         std::vector<Vertex> cube = {
-            Vertex(glm::vec3(0.0f, 0.3f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u, v)), //0
-            Vertex(glm::vec3(0.0f, 0.3f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u1,v)), //1
-            Vertex(glm::vec3(0.0f, 0.0f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u, v1)), //2
+            Vertex(glm::vec3(0.0f, 0.3f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u, v)),   //0
+            Vertex(glm::vec3(0.0f, 0.3f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u1,v)),   //1
+            Vertex(glm::vec3(0.0f, 0.0f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u, v1)),  //2
 
             Vertex(glm::vec3(0.0f, 0.0f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u1, v1)), //3
-            Vertex(glm::vec3(0.3f, 0.0f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u, v2)), //4 
+            Vertex(glm::vec3(0.3f, 0.0f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u, v2)),  //4 
             Vertex(glm::vec3(0.3f, 0.0f, 0.3f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u1, v2)), //5 
             
             Vertex(glm::vec3(0.3f, 0.3f, 0.0f), Color(0.0f, 0.0f, 0.0f), glm::vec2(u,  v3)), //6
@@ -162,11 +163,15 @@ public:
     void Render() override {
         shader.Bind();
 
+        time = time + 0.001;
+
         Scissor();
         ClearColor();
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
         glEnable(GL_TEXTURE_2D);
+        //glEnable(GL_CULL_FACE);
+        //glCullFace(GL_BACK);
 
         camera.ResetModel();
         shader.SetMVPMatrix(camera.GetMVP());
@@ -175,14 +180,14 @@ public:
 
         //TODO: Make helper function to draw grid
         glBegin(GL_LINES);
-        for (int i = -10; i <= 10; i++) {
+        for (int i = -100; i <= 100; i++) {
             glColor3f(1.0, 0, 0);
-            glVertex3f(i * 0.1, 0.0, -1.0);
-            glVertex3f(i * 0.1, 0.0, 1.0);
+            glVertex3f(i * 0.1, 0.0, -10.0);
+            glVertex3f(i * 0.1, 0.0, 10.0);
         }
-        for (int i = -10; i <= 10; i++) {
-            glVertex3f(-1.0, 0.0, i * 0.1);
-            glVertex3f(1.0, 0.0, i * 0.1);
+        for (int i = -100; i <= 100; i++) {
+            glVertex3f(-10.0, 0.0, i * 0.1);
+            glVertex3f(10.0, 0.0, i * 0.1);
         }
         glEnd();
 
@@ -193,12 +198,20 @@ public:
         shader.SetInt("texture1", 0);
       
 
-        for (int z = -3; z <= 3; z+=2) {
-            for (int x = -3; x <= 3; x+=2) {
+        for (int z = -10; z <= 10; z+=1) {
+            for (int x = -10; x <= 10; x+=1) {
                 float xf = x * 0.3 - 0.15;
                 float zf = z * 0.3 - 0.15;
+                //float yf = (sin(xf+time) + cos(zf + time)) * 0.4;
+                float yf = 0;
+                int xd = 10 - abs(x);
+                int zd = 10 - abs(z);
 
-                glm::mat4 translate = glm::translate(identity, glm::vec3(xf, 0.f, zf));
+                if (xd < 5 && zd < 5) {
+                    yf = 0.3;
+                }
+
+                glm::mat4 translate = glm::translate(identity, glm::vec3(xf, yf, zf));
                 camera.SetModel(translate);
                 shader.SetMVPMatrix(camera.GetMVP());
                 cubeMesh->Draw(shader);
