@@ -70,9 +70,9 @@ public:
         //  6----------7
 
         float sizef = 512.0;
-        float u = 12.0f / sizef;
-        float v = 25.0f / sizef;
-        float bs = 121.5f / sizef;
+        float u = 0.0f / sizef;
+        float v = 0.0f / sizef;
+        float bs = 121.0f / sizef;
 
         float u1 = u + bs;
         float u2 = u + 2 * bs;
@@ -146,24 +146,32 @@ public:
         glm::vec3 direction = window->input.GetDirection(0.01);
 
         if (window->input.IsLeft()) {
-            camera.Rotate(0.10);
+            camera.Rotate(0.3);
         }
         if (window->input.IsRight()) {
-            camera.Rotate(-0.1);
+            camera.Rotate(-0.3);
         }
         if (window->input.IsUp()) {
-            camera.Zoom(0.001);
+            camera.Zoom(0.01);
         }
         if (window->input.IsDown()) {
-            camera.Zoom(-0.001);
+            camera.Zoom(-0.01);
         }
-        shader.SetMatrix("MVP", camera.GetMVP());
+
+        if (window->input.IsKeyDown(GLFW_KEY_W)) {
+            camera.PositionY(0.01);
+        }
+        if (window->input.IsKeyDown(GLFW_KEY_S)) {
+            camera.PositionY(-0.01);
+        }
+
+        //shader.SetMatrix("MVP", camera.GetMVP());
     }
 
     void Render() override {
         shader.Bind();
 
-        time = time + 0.001;
+        time = time + 0.01;
 
         Scissor();
         ClearColor();
@@ -196,7 +204,6 @@ public:
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
         shader.SetInt("texture1", 0);
-      
 
         for (int z = -10; z <= 10; z+=1) {
             for (int x = -10; x <= 10; x+=1) {
@@ -207,9 +214,20 @@ public:
                 int xd = 10 - abs(x);
                 int zd = 10 - abs(z);
 
-                if (xd < 5 && zd < 5) {
-                    yf = 0.3;
+                auto az = abs(z);
+                auto ax = abs(x);
+                if (az <= 5 && ax <= 5) {
+                    auto d = az;
+                    if (ax > d) {
+                        d = ax;
+                    }
+                    yf = 5.0 - d * 0.8 * sin(time);
                 }
+
+                //yf = (sin(xf+time) + cos(zf+time)) * 0.5;
+                //if (xd < 5 && zd < 5) {
+                //    yf = 0.3;
+                //}
 
                 glm::mat4 translate = glm::translate(identity, glm::vec3(xf, yf, zf));
                 camera.SetModel(translate);

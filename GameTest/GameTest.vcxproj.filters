@@ -55,8 +55,5 @@
     <CopyFileToFolders Include="Resources\texture.png">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Resources\texture2.png">
-      <Filter>Resource Files</Filter>
-    </CopyFileToFolders>
   </ItemGroup>
 </Project>
