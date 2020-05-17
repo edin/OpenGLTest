@@ -8,6 +8,11 @@
 #include "GameScreen.h"
 #include "Mesh.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
+
+
 namespace Nuts {
     Size GameScreen::GetScreenSize() {
         Size size = window->GetSize();

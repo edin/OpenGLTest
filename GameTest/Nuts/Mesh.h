@@ -2,6 +2,7 @@
 
 #include "TypeAliases.h"
 #include "BasicTypes.h"
+#include "Shader.h"
 
 namespace Nuts {
     class Mesh {
@@ -48,17 +49,40 @@ namespace Nuts {
 
         Mesh(
             std::vector<Vertex> vertices,
-            std::vector<uint> indices
-            //std::vector<Texture> textures
+            std::vector<uint> indices,
+            std::vector<Texture> textures
         ) {
             this->vertices = vertices;
             this->indices = indices;
-            this->textures = {}; // textures;
+            this->textures = textures;
             InitializeBuffers();
         }
 
-        void Draw()
+        void Draw(Shader& shader)
         {
+            //uint diffuseNr = 1;
+            //uint specularNr = 1;
+
+            //for (unsigned int i = 0; i < textures.size(); i++)
+            //{
+            //    glActiveTexture(GL_TEXTURE0 + i);
+            //    std::string number;
+            //    std::string name = textures[i].type;
+
+            //    if (name == "texture_diffuse") {
+            //        number = std::to_string(diffuseNr++);
+            //    }
+            //    else if (name == "texture_specular")
+            //    {
+            //        number = std::to_string(specularNr++);
+            //    }
+            //    std::string parameterName = "material." + name + number;
+
+            //    shader.SetFloat(parameterName, i);
+            //    glBindTexture(GL_TEXTURE_2D, textures[i].id);
+            //}
+            //glActiveTexture(GL_TEXTURE0);
+
             glBindVertexArray(m_Vao);
             glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*)0);
             glBindVertexArray(0);

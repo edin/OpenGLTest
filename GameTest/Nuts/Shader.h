@@ -91,7 +91,8 @@ namespace Nuts {
         }
 
         void SetInt(const std::string& name, int value) {
-            glUniform1i(GetLocation(name), value);
+            auto loc = GetLocation(name);
+            glUniform1i(loc, value);
         }
 
         void SetBool(const std::string& name, bool value) {

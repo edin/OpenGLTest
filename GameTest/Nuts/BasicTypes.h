@@ -24,9 +24,18 @@ namespace Nuts {
             this->textureCoords = glm::vec2();
             this->normal = glm::vec3();
         }
+
+        Vertex(glm::vec3 position, Color color, glm::vec2 textureCoords) {
+            this->position = position;
+            this->color = color;
+            this->textureCoords = textureCoords;
+            this->normal = glm::vec3();
+        }
     };
 
     struct Texture {
+        uint id;
+        std::string type;
     };
 
     struct Size {
