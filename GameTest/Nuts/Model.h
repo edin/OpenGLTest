@@ -72,11 +72,14 @@ namespace Nuts {
                 else {
                     vertex.textureCoords = glm::vec2(0.0f, 0.0f);
                 }
-
-                auto& tan = mesh->mTangents[i];
-                auto& bitan = mesh->mBitangents[i];
-                vertex.tangent = glm::vec3(tan.x, tan.y, tan.z);
-                vertex.bitangent = glm::vec3(bitan.x, bitan.y, bitan.z); ;
+                if (mesh->mTangents != nullptr) {
+                    auto& tan = mesh->mTangents[i];
+                    vertex.tangent = glm::vec3(tan.x, tan.y, tan.z);
+                }
+                if (mesh->mBitangents != nullptr) {
+                    auto& bitan = mesh->mBitangents[i];
+                    vertex.bitangent = glm::vec3(bitan.x, bitan.y, bitan.z); ;
+                }
                 vertices.push_back(vertex);
             }
             for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -86,6 +89,18 @@ namespace Nuts {
                     indices.push_back(face.mIndices[j]);
                 }
             }
+
+            aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
+            std::vector<Texture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+            std::vector<Texture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+            std::vector<Texture> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+            std::vector<Texture> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+
+            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+            textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+            textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
             return Mesh(vertices, indices, textures);
         }
@@ -98,7 +113,9 @@ namespace Nuts {
                 aiString aiStr;
                 mat->GetTexture(type, i, &aiStr);
                 std::string str(aiStr.C_Str());
-                auto it = std::find(textures_loaded.begin(), textures_loaded.end(), str);
+                auto it = std::find_if(textures_loaded.begin(), textures_loaded.end(), [&str](auto& tex) {
+                    return tex.path == str;
+                    });
 
                 if (it != textures_loaded.end()) {
                     textures.push_back(*it);

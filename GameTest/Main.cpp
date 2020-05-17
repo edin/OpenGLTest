@@ -41,9 +41,11 @@ private:
     Shader shader{ vertexShader, fragmentShader };
     std::vector<uint> cubeIndices;
     std::unique_ptr<Mesh> cubeMesh;
+    std::unique_ptr<Model> backpack;
     unsigned char* image;
     GLuint texture;
     float time = 0.0;
+
 public:
     void Initialize() {
         auto size = GetScreenSize();
@@ -139,6 +141,8 @@ public:
         glGenerateMipmap(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
         stbi_image_free(image);
+
+        backpack = std::make_unique<Model>("Resources\\backpack\\backpack.obj");
     }
 
     void Update() override {
@@ -202,8 +206,10 @@ public:
         glBindTexture(GL_TEXTURE_2D, texture);
         shader.SetInt("texture1", 0);
 
-        for (int z = -10; z <= 10; z += 1) {
-            for (int x = -10; x <= 10; x += 1) {
+        backpack->Draw(shader);
+
+        for (int z = -20; z <= 20; z += 1) {
+            for (int x = -20; x <= 20; x += 1) {
                 float xf = x * 0.3 - 0.15;
                 float zf = z * 0.3 - 0.15;
                 //float yf = (sin(xf+time) + cos(zf + time)) * 0.4;

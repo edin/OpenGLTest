@@ -59,4 +59,30 @@
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\backpack\ao.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\backpack\diffuse.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\backpack\normal.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\backpack\roughness.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\backpack\specular.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\backpack\backpack.mtl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Resources\backpack\backpack.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\backpack\source_attribution.txt" />
+  </ItemGroup>
 </Project>
