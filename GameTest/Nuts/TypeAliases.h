@@ -13,6 +13,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/common.hpp>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 namespace Nuts {
     template <typename T> using UniqueVector = std::vector<std::unique_ptr<T>>;
     using uint = unsigned int;
